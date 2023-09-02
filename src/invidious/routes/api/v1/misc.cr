@@ -93,7 +93,7 @@ module Invidious::Routes::API::V1::Misc
         "playlistHtml" => playlist_html,
         "index"        => index,
         "nextVideo"    => next_video,
-        "firstVideo"    => first_video,
+        "firstVideo"   => first_video,
       }.to_json
     end
 
