@@ -87,11 +87,13 @@ module Invidious::Routes::API::V1::Misc
     if format == "html"
       playlist_html = template_playlist(json_response)
       index, next_video = json_response["videos"].as_a.skip(1 + lookback).select { |video| !video["author"].as_s.empty? }[0]?.try { |v| {v["index"], v["videoId"]} } || {nil, nil}
+      first_video = json_response["videos"][0]["videoId"] || nil
 
       response = {
         "playlistHtml" => playlist_html,
         "index"        => index,
         "nextVideo"    => next_video,
+        "firstVideo"    => first_video,
       }.to_json
     end
 
