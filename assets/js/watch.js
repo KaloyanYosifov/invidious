@@ -3,8 +3,8 @@ var video_data = JSON.parse(document.getElementById('video_data').textContent);
 var spinnerHTML = '<h3 style="text-align:center"><div class="loading"><i class="icon ion-ios-refresh"></i></div></h3>';
 var spinnerHTMLwithHR = spinnerHTML + '<hr>';
 
-String.prototype.supplant = function (o) {
-    return this.replace(/{([^{}]*)}/g, function (a, b) {
+String.prototype.supplant = function(o) {
+    return this.replace(/{([^{}]*)}/g, function(a, b) {
         var r = o[b];
         return typeof r === 'string' || typeof r === 'number' ? r : a;
     });
@@ -119,17 +119,18 @@ function get_playlist(plid) {
             '&format=html&hl=' + video_data.preferences.locale;
     }
 
-    helpers.xhr('GET', plid_url, {retries: 5, entity_name: 'playlist'}, {
-        on200: function (response) {
+    helpers.xhr('GET', plid_url, { retries: 5, entity_name: 'playlist' }, {
+        on200: function(response) {
             playlist.innerHTML = response.playlistHtml;
+            const nextVideoToPlay = response.nextVideo || response.firstVideo;
 
-            if (!response.nextVideo) return;
+            if (!nextVideoToPlay) return;
 
-            var nextVideo = document.getElementById(response.nextVideo);
+            var nextVideo = document.getElementById(nextVideoToPlay);
             nextVideo.parentNode.parentNode.scrollTop = nextVideo.offsetTop;
 
-            player.on('ended', function () {
-                var url = new URL('https://example.com/watch?v=' + response.nextVideo);
+            player.on('ended', function() {
+                var url = new URL('https://example.com/watch?v=' + nextVideoToPlay);
 
                 url.searchParams.set('list', plid);
                 if (!plid.startsWith('RD'))
@@ -146,14 +147,14 @@ function get_playlist(plid) {
                 location.assign(url.pathname + url.search);
             });
         },
-        onNon200: function (xhr) {
+        onNon200: function(xhr) {
             playlist.innerHTML = '';
             document.getElementById('continue').style.display = '';
         },
-        onError: function (xhr) {
+        onError: function(xhr) {
             playlist.innerHTML = spinnerHTMLwithHR;
         },
-        onTimeout: function (xhr) {
+        onTimeout: function(xhr) {
             playlist.innerHTML = spinnerHTMLwithHR;
         }
     });
@@ -169,12 +170,12 @@ function get_reddit_comments() {
         '?source=reddit&format=html' +
         '&hl=' + video_data.preferences.locale;
 
-    var onNon200 = function (xhr) { comments.innerHTML = fallback; };
+    var onNon200 = function(xhr) { comments.innerHTML = fallback; };
     if (video_data.params.comments[1] === 'youtube')
-        onNon200 = function (xhr) {};
+        onNon200 = function(xhr) { };
 
-    helpers.xhr('GET', url, {retries: 5, entity_name: ''}, {
-        on200: function (response) {
+    helpers.xhr('GET', url, { retries: 5, entity_name: '' }, {
+        on200: function(response) {
             comments.innerHTML = ' \
             <div> \
                 <h3> \
@@ -219,12 +220,12 @@ function get_youtube_comments() {
         '&hl=' + video_data.preferences.locale +
         '&thin_mode=' + video_data.preferences.thin_mode;
 
-    var onNon200 = function (xhr) { comments.innerHTML = fallback; };
+    var onNon200 = function(xhr) { comments.innerHTML = fallback; };
     if (video_data.params.comments[1] === 'youtube')
-        onNon200 = function (xhr) {};
+        onNon200 = function(xhr) { };
 
-    helpers.xhr('GET', url, {retries: 5, entity_name: 'comments'}, {
-        on200: function (response) {
+    helpers.xhr('GET', url, { retries: 5, entity_name: 'comments' }, {
+        on200: function(response) {
             comments.innerHTML = ' \
             <div> \
                 <h3> \
@@ -254,10 +255,10 @@ function get_youtube_comments() {
             comments.children[0].children[1].children[0].onclick = swap_comments;
         },
         onNon200: onNon200, // declared above
-        onError: function (xhr) {
+        onError: function(xhr) {
             comments.innerHTML = spinnerHTML;
         },
-        onTimeout: function (xhr) {
+        onTimeout: function(xhr) {
             comments.innerHTML = spinnerHTML;
         }
     });
@@ -278,7 +279,7 @@ function get_youtube_replies(target, load_more, load_replies) {
     if (load_replies) url += '&action=action_get_comment_replies';
 
     helpers.xhr('GET', url, {}, {
-        on200: function (response) {
+        on200: function(response) {
             if (load_more) {
                 body = body.parentNode.parentNode;
                 body.removeChild(body.lastElementChild);
@@ -303,10 +304,10 @@ function get_youtube_replies(target, load_more, load_replies) {
                 body.appendChild(div);
             }
         },
-        onNon200: function (xhr) {
+        onNon200: function(xhr) {
             body.innerHTML = fallback;
         },
-        onTimeout: function (xhr) {
+        onTimeout: function(xhr) {
             console.warn('Pulling comments failed');
             body.innerHTML = fallback;
         }
@@ -314,7 +315,7 @@ function get_youtube_replies(target, load_more, load_replies) {
 }
 
 if (video_data.play_next) {
-    player.on('ended', function () {
+    player.on('ended', function() {
         var url = new URL('https://example.com/watch?v=' + video_data.next_video);
 
         if (video_data.params.autoplay || video_data.params.continue_autoplay)
@@ -331,7 +332,7 @@ if (video_data.play_next) {
     });
 }
 
-addEventListener('load', function (e) {
+addEventListener('load', function(e) {
     if (video_data.plid)
         get_playlist(video_data.plid);
 
