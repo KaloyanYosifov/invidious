@@ -161,6 +161,19 @@ https_only: false
 #force_resolve:
 
 
+##
+## Use Innertube's transcripts API instead of timedtext for closed captions
+##
+## Useful for larger instances as InnerTube is **not ratelimited**. See https://github.com/iv-org/invidious/issues/2567
+##
+## Subtitle experience may differ slightly on Invidious.
+##
+## Accepted values: true, false
+## Default: false
+##
+# use_innertube_for_captions: false
+
+
 # -----------------------------
 #  Logging
 # -----------------------------
@@ -377,27 +390,6 @@ jobs:
     ## Default: true
     ##
     enable: true
-
-
-# -----------------------------
-#  Captcha API
-# -----------------------------
-
-##
-## URL of the captcha solving service.
-##
-## Accepted values: any URL
-## Default: https://api.anti-captcha.com
-##
-#captcha_api_url: https://api.anti-captcha.com
-
-##
-## API key for the captcha solving service.
-##
-## Accepted values: a string
-## Default: <none>
-##
-#captcha_key:
 
 
 # -----------------------------

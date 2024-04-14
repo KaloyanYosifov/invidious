@@ -21,18 +21,6 @@ function toggle_parent(target) {
     }
 }
 
-function toggle_comments(event) {
-    var target = event.target;
-    var body = target.parentNode.parentNode.parentNode.children[1];
-    if (body.style.display === 'none') {
-        target.textContent = '[ − ]';
-        body.style.display = '';
-    } else {
-        target.textContent = '[ + ]';
-        body.style.display = 'none';
-    }
-}
-
 function swap_comments(event) {
     var source = event.target.getAttribute('data-comments');
 
@@ -41,36 +29,6 @@ function swap_comments(event) {
     } else if (source === 'reddit') {
         get_reddit_comments();
     }
-}
-
-function hide_youtube_replies(event) {
-    var target = event.target;
-
-    var sub_text = target.getAttribute('data-inner-text');
-    var inner_text = target.getAttribute('data-sub-text');
-
-    var body = target.parentNode.parentNode.children[1];
-    body.style.display = 'none';
-
-    target.textContent = sub_text;
-    target.onclick = show_youtube_replies;
-    target.setAttribute('data-inner-text', inner_text);
-    target.setAttribute('data-sub-text', sub_text);
-}
-
-function show_youtube_replies(event) {
-    var target = event.target;
-
-    var sub_text = target.getAttribute('data-inner-text');
-    var inner_text = target.getAttribute('data-sub-text');
-
-    var body = target.parentNode.parentNode.children[1];
-    body.style.display = '';
-
-    target.textContent = sub_text;
-    target.onclick = hide_youtube_replies;
-    target.setAttribute('data-inner-text', inner_text);
-    target.setAttribute('data-sub-text', sub_text);
 }
 
 var continue_button = document.getElementById('continue');
